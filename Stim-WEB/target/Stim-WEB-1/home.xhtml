@@ -1,0 +1,45 @@
+<ui:composition 
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    template="/plantillas/plantilla.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formHome" styleClass="">
+                <p:carousel value="#{gameBean.findAll()}" var="game" circular="true" autoplayInterval="3000"
+                            responsiveOptions="#{carouselView.responsiveOptions}" numVisible="5" numScroll="1"
+                            styleClass="pb-8">
+                    <div class="product-item">
+                        <div class="product-item-content">
+                            <p:commandLink action="#{gameBean.viewGame(game)}" process="@this" update="formHome">
+                                <div class="mb-3">
+                                    <p:graphicImage value="#{game.posterUri}"/>
+                                </div>
+                                <div>
+                                    <h4 class="mb-1">#{game.name}</h4>
+                                </div>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                </p:carousel>
+
+             
+                <h:panelGroup layout="block" styleClass="games-container">
+                    <ui:repeat value="#{gameBean.findAll()}" var="game">
+                        <div class="game-item">
+                            <p:commandLink action="#{gameBean.viewGame(game)}"
+                                           process="@this"
+                                           update="formHome">
+                                <p:graphicImage value="#{game.posterUri}" styleClass="game-image" />
+                            </p:commandLink>
+                        </div>
+                    </ui:repeat>
+                </h:panelGroup>
+
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

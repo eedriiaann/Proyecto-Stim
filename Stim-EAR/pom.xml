@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mycompany</groupId>
+    <artifactId>Stim-EAR</artifactId>
+    <version>1</version>
+    <packaging>ear</packaging>
+    <name>Stim-EAR-1</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <jakartaee.version>11.0.0</jakartaee.version>
+    </properties>
+
+    <dependencies>
+        <!-- Módulo de modelo -->
+        <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>Stim-Modelo</artifactId>
+            <version>1</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- Módulo EJB -->
+        <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>Stim-EJB</artifactId>
+            <version>1</version>
+            <type>ejb</type>
+        </dependency>
+
+        <!-- Módulo Web -->
+        <dependency>
+            <groupId>com.mycompany</groupId>
+            <artifactId>Stim-WEB</artifactId>
+            <version>1</version>
+            <type>war</type>
+        </dependency>
+
+        <!-- Jakarta REST -->
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin para empaquetar EAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <includeModuleDependencies>false</includeModuleDependencies>
+                    <modules>
+                        <webModule>
+                            <groupId>com.mycompany</groupId>
+                            <artifactId>Stim-WEB</artifactId>
+                            <contextRoot>Stim-WEB</contextRoot>
+                        </webModule>
+                        <ejbModule>
+                            <groupId>com.mycompany</groupId>
+                            <artifactId>Stim-EJB</artifactId>
+                        </ejbModule>
+                    </modules>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin para compilar con JDK 21 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

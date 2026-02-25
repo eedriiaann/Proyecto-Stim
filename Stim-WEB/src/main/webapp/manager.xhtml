@@ -1,0 +1,29 @@
+<ui:composition 
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/plantillas/plantilla.xhtml">
+
+    <ui:define name="content">
+        <p:outputLabel rendered="#{!beanForm.isAdmin}" value="ACCESO DENEGADO"/>
+
+        <h:form id="formAdmin" rendered="#{beanForm.isAdmin}">
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:outputLabel value="#{msg.admin}" styleClass="text-4xl font-bold"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:tabMenu activeIndex="-1">
+                        <p:menuitem value="#{msg.userHeader}" icon="pi pi-users" outcome="admin-users.xhtml"/>
+                        <p:menuitem value="#{msg.gameHeader}" icon="pi pi-desktop" outcome="admin-games.xhtml"/>
+                    </p:tabMenu>
+                </p:toolbarGroup>
+            </p:toolbar>
+            
+            <div class="text-center mt-5">
+                <h3>Seleccione una categoría para gestionar</h3>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+    <h:head>
+        <title>Challenger</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="#{resource['images/placeholder.png']}"/>
+        <h:outputStylesheet name="primeflex/primeflex.css"/>
+        <h:outputStylesheet name="css/css3.css"/>
+        <h:outputStylesheet name="css/bootstrap.css"/>
+    </h:head>
+    <h:body style="margin: 0 ; padding: 0 ; overflow-x: hidden">
+        <ui:include src="./header.xhtml"/>
+        <ui:insert name="content"/>
+        <ui:include src="./footer.xhtml"/>
+    </h:body>
+</html>

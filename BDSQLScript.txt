@@ -1,0 +1,223 @@
+-- ======================================
+-- RECREAR BASE DE DATOS COMPLETA
+-- ======================================
+DROP DATABASE IF EXISTS game_reviews;
+CREATE DATABASE game_reviews
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+USE game_reviews;
+
+-- ======================================
+-- DESACTIVAR SAFE UPDATES (MySQL Workbench)
+-- ======================================
+SET SQL_SAFE_UPDATES = 0;
+
+-- ======================================
+-- TABLAS
+-- ======================================
+
+CREATE TABLE user (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  description TEXT,
+  reviews INT DEFAULT 0,
+  pfp_uri VARCHAR(255)
+);
+
+CREATE TABLE game (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150) NOT NULL,
+  description TEXT,
+  rating DOUBLE DEFAULT 1 CHECK (rating BETWEEN 1 AND 5),
+  count_review INT DEFAULT 0,
+  developer VARCHAR(100),
+  publisher VARCHAR(100),
+  launch_date DATE,
+  poster_uri VARCHAR(255),
+  banner_uri VARCHAR(255)
+);
+
+CREATE TABLE genre (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE os (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE game_genre (
+  id_game BIGINT,
+  id_genre INT,
+  PRIMARY KEY (id_game, id_genre),
+  FOREIGN KEY (id_game) REFERENCES game(id) ON DELETE CASCADE,
+  FOREIGN KEY (id_genre) REFERENCES genre(id) ON DELETE CASCADE
+);
+
+CREATE TABLE game_os (
+  id_game BIGINT,
+  id_os INT,
+  PRIMARY KEY (id_game, id_os),
+  FOREIGN KEY (id_game) REFERENCES game(id) ON DELETE CASCADE,
+  FOREIGN KEY (id_os) REFERENCES os(id) ON DELETE CASCADE
+);
+
+CREATE TABLE review (
+  id_game BIGINT,
+  id_user BIGINT,
+  rating INT CHECK (rating BETWEEN 1 AND 5),
+  review TEXT,
+  review_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_game, id_user),
+  FOREIGN KEY (id_game) REFERENCES game(id) ON DELETE CASCADE,
+  FOREIGN KEY (id_user) REFERENCES user(id) ON DELETE CASCADE
+);
+
+-- ======================================
+-- DATOS: USUARIOS
+-- ======================================
+
+INSERT INTO user (id, name, email, password, description, reviews, pfp_uri) VALUES
+(1,'Juan Pérez','juan.perez@example.com','password123','Gamer casual, fan de los indies.',0,'https://i.pravatar.cc/150?img=1'),
+(2,'María Gómez','maria.gomez@example.com','password123','Amante de los RPG y la buena historia.',0,'https://i.pravatar.cc/150?img=2'),
+(5,'Carlos Ruiz','carlos.ruiz@example.com','password123','Tryhard en roguelikes.',0,'https://i.pravatar.cc/150?img=5'),
+(17,'Administrador','admin@admin.com','admin123','Cuenta administradora del sistema.',1,'https://i.pravatar.cc/150?img=9'),
+(19,'Wajaja Gamer','wajaja@wajaja.com','wajaja','Jugador de pruebas del sistema.',10,'https://i.pravatar.cc/150?img=11'),
+(24,'Usuario A','aaaaa@gmail.com','aaaaa','Fan de los juegos de plataformas.',1,NULL),
+(25,'Goku calbo','aaaaa','aaaa','Wajaja\n',1,'https://imgs.search.brave.com/xsqBpFOES_3qHMT47G-lf811IRZSDUNHQk6rXcRRyvU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAyMS8w/Mi8xOC8yMC81Mi9n/b2t1LTYwMjgzOTBf/MTI4MC5wbmc');
+
+-- ======================================
+-- DATOS: JUEGOS
+-- ======================================
+
+INSERT INTO game (id, name, description, rating, count_review, developer, publisher, launch_date, poster_uri, banner_uri) VALUES
+(1,'Bloons TD 6','Estrategia de defensa de torres masiva en 3D.',1,0,'Ninja Kiwi','Ninja Kiwi','2018-12-18','https://cdn.akamai.steamstatic.com/steam/apps/960090/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/960090/library_hero.jpg'),
+(2,'Hades','Desafía al dios de los muertos en este dungeon crawler.',1,0,'Supergiant Games','Supergiant Games','2020-09-17','https://cdn.akamai.steamstatic.com/steam/apps/1145360/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/1145360/library_hero.jpg'),
+(4,'Celeste','Ayuda a Madeline a sobrevivir a sus demonios internos.',4,4,'Matt Makes Games','Matt Makes Games','2018-01-25','https://cdn.akamai.steamstatic.com/steam/apps/504230/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/504230/library_hero.jpg'),
+(5,'Dead Cells','Acción y plataformas de estilo Metroidvania.',5,1,'Motion Twin','Motion Twin','2018-08-07','https://cdn.akamai.steamstatic.com/steam/apps/588650/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/588650/library_hero.jpg'),
+(7,'Hollow Knight','Una aventura de acción clásica en 2D a través de un reino de insectos.',5,1,'Team Cherry','Team Cherry','2017-02-24','https://cdn.akamai.steamstatic.com/steam/apps/367520/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/367520/library_hero.jpg'),
+(10,'Cyberpunk 2077','Un RPG de acción de mundo abierto ambientado en Night City.',2,5,'CD Projekt Red','CD Projekt Red','2020-12-10','https://cdn.akamai.steamstatic.com/steam/apps/1091500/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/1091500/library_hero.jpg'),
+(12,'Terraria','¡Cava, lucha, explora y construye!',3,1,'Re-Logic','Re-Logic','2011-05-16','https://cdn.akamai.steamstatic.com/steam/apps/105600/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/105600/library_hero.jpg'),
+(13,'Cuphead','Acción clásica de "disparar y correr" inspirada en dibujos animados.',5,1,'Studio MDHR','Studio MDHR','2017-09-29','https://cdn.akamai.steamstatic.com/steam/apps/268910/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/268910/library_hero.jpg'),
+(14,'Factorio','Un juego sobre la construcción y creación de fábricas automatizadas.',5,1,'Wube Software','Wube Software','2020-08-14','https://cdn.akamai.steamstatic.com/steam/apps/427520/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/427520/library_hero.jpg'),
+(15,'Outer Wilds','Un misterio sobre un sistema solar atrapado en un bucle temporal.',1,1,'Mobius Digital','Annapurna Interactive','2019-05-30','https://cdn.akamai.steamstatic.com/steam/apps/753640/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/753640/library_hero.jpg'),
+(17,'Gorka despues de jsf',NULL,2,2,'Ninja Kiwi','Ninja Kiwi',NULL,'https://i.pinimg.com/736x/8f/97/5a/8f975a884fc860b6b645e868b3334897.jpg','https://i.pinimg.com/736x/8f/97/5a/8f975a884fc860b6b645e868b3334897.jpg');
+
+-- ======================================
+-- DATOS: GENEROS
+-- ======================================
+
+INSERT INTO genre (id, name) VALUES
+(1,'Acción'),
+(2,'Aventura'),
+(10,'Estrategia'),
+(12,'Estrategia por turnos'),
+(8,'Plataformas'),
+(3,'RPG'),
+(13,'Simulación'),
+(24,'Tower Defense');
+
+-- ======================================
+-- DATOS: SISTEMAS OPERATIVOS
+-- ======================================
+
+INSERT INTO os (id, name) VALUES
+(1,'Windows'),
+(2,'Linux'),
+(3,'MacOS'),
+(4,'SteamOS');
+
+-- ======================================
+-- DATOS: RELACIONES JUEGO-GÉNERO
+-- ======================================
+
+INSERT INTO game_genre (id_game, id_genre) VALUES
+(4,1),(5,1),(7,1),(10,1),(12,1),(13,1),(7,2),(15,2),(5,3),
+(10,3),(17,3),(4,8),(5,8),(7,8),(1,10),(14,10),(14,13),(17,13),(1,24);
+
+-- ======================================
+-- DATOS: RELACIONES JUEGO-OS
+-- ======================================
+
+INSERT INTO game_os (id_game, id_os) VALUES
+(1,1),(2,1),(4,1),(5,1),(7,1),(10,1),(12,1),(13,1),(14,1),(15,1),(17,1),
+(2,2),(4,2),(5,2),(7,2),(10,2),(12,2),(13,2),(14,2),(15,2),(1,3),(2,3),
+(4,3),(5,3),(7,3),(10,3),(12,3),(13,3),(14,3),(15,3),(1,4),(17,4);
+
+-- ======================================
+-- DATOS: RESEÑAS
+-- ======================================
+
+INSERT INTO review (id_game, id_user, rating, review, review_date) VALUES
+(1,1,4,'Muy entretenido y estratégico, ideal para partidas cortas.','2026-02-01 19:10:00'),
+(1,2,5,'Súper adictivo, siempre vuelvo aunque diga que no.','2026-02-01 19:15:00'),
+(1,5,3,'Está bien, pero después de muchas horas se vuelve repetitivo.','2026-02-01 19:20:00'),
+(2,1,5,'Combate fluido, música brutal y personajes increíbles.','2026-02-01 19:25:00'),
+(2,2,5,'La narrativa es excelente, morir nunca se siente mal.','2026-02-01 19:30:00'),
+(2,5,4,'Buenísimo, aunque algunos builds dependen mucho del RNG.','2026-02-01 19:35:00'),
+(4,1,4,'Gran mensaje emocional, aunque exige mucha precisión.','2026-02-01 19:40:00'),
+(4,2,5,'Difícil pero justo, cada muerte enseña algo.','2026-02-01 19:45:00'),
+(4,5,2,'Demasiado frustrante para mi gusto.','2026-02-01 19:50:00'),
+(4,24,3,'Me gusta el arte y la dificultad, pero se me hace muy frustrante a veces.','2026-02-01 17:35:19'),
+(5,1,5,'Acción rápida y controles perfectos.','2026-02-01 19:55:00'),
+(5,2,4,'Muy divertido, pero no es muy amigable para principiantes.','2026-02-01 20:00:00'),
+(5,19,5,'El mejor roguelike que he jugado en mucho tiempo. Muy fluido.','2026-02-01 18:40:28'),
+(7,1,5,'Exploración increíble y una ambientación única.','2026-02-01 20:05:00'),
+(7,2,4,'Me encanta el mundo, aunque a veces no sabes a dónde ir.','2026-02-01 20:10:00'),
+(7,5,5,'Un metroidvania casi perfecto.','2026-02-01 20:15:00'),
+(7,19,5,'Obra maestra del diseño de niveles y la atmósfera.','2026-02-01 01:44:49'),
+(10,1,3,'Buen mundo y personajes, pero sigue teniendo bugs.','2026-02-01 20:20:00'),
+(10,2,4,'La historia principal es muy buena.','2026-02-01 20:25:00'),
+(10,5,2,'Esperaba mucho más del gameplay.','2026-02-01 20:30:00'),
+(10,19,1,'Todavía tiene demasiados fallos técnicos en mi opinión.','2026-02-01 01:18:57'),
+(10,25,1,'Bug','2026-02-01 23:02:36'),
+(12,1,4,'Libertad total para jugar como quieras.','2026-02-01 20:35:00'),
+(12,2,5,'Increíble cantidad de contenido.','2026-02-01 20:40:00'),
+(12,5,3,'Buen juego, pero abrumador al inicio.','2026-02-01 20:45:00'),
+(12,19,3,'Divertido, pero requiere dedicarle muchísimas horas para avanzar.','2026-02-01 18:34:15'),
+(13,1,5,'Arte espectacular y dificultad desafiante.','2026-02-01 20:50:00'),
+(13,2,4,'Muy divertido en cooperativo.','2026-02-01 20:55:00'),
+(13,5,3,'Buen juego, pero no es para todo el mundo.','2026-02-01 21:00:00'),
+(13,19,5,'Dificultad increíble y un estilo visual único.','2026-02-01 01:19:16'),
+(14,1,5,'Empiezas tranquilo y de repente han pasado 6 horas.','2026-02-01 21:05:00'),
+(14,2,4,'Muy complejo pero satisfactorio.','2026-02-01 21:10:00'),
+(14,5,5,'Optimizar fábricas es pura droga.','2026-02-01 21:15:00'),
+(14,19,5,'La fábrica debe crecer. Muy adictivo.','2026-02-01 01:45:07'),
+(15,1,4,'Explorar sin guías es una experiencia única.','2026-02-01 21:20:00'),
+(15,2,5,'Una obra maestra si te gusta descubrir por tu cuenta.','2026-02-01 21:25:00'),
+(15,5,2,'Interesante, pero demasiado lento para mí.','2026-02-01 21:30:00'),
+(15,19,1,'No logré entender la mecánica del tiempo, se me hizo pesado.','2026-02-01 01:40:38'),
+(17,17,3,'wajaja','2026-02-01 23:37:10'),
+(17,19,1,'bien loco','2026-02-01 23:37:25');
+
+-- ======================================
+-- ACTUALIZAR CONTADORES DE RESEÑAS Y RATING
+-- ======================================
+
+UPDATE user u
+SET reviews = (
+  SELECT COUNT(*)
+  FROM review r
+  WHERE r.id_user = u.id
+);
+
+UPDATE game g
+SET
+  count_review = (
+    SELECT COUNT(*)
+    FROM review r
+    WHERE r.id_game = g.id
+  ),
+  rating = (
+    SELECT ROUND(AVG(r.rating), 2)
+    FROM review r
+    WHERE r.id_game = g.id
+  );
+
+-- ======================================
+-- VOLVER A ACTIVAR SAFE UPDATES
+-- ======================================
+SET SQL_SAFE_UPDATES = 1;

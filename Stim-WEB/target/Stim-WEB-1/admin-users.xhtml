@@ -1,0 +1,153 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/plantillas/plantilla.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="i" value="0"/>
+    </f:metadata>
+
+    <ui:define name="content">
+
+        <p:outputLabel rendered="#{!beanForm.isAdmin}"
+                       value="ACCESO DENEGADO: NO ERES ADMINISTRADOR"/>
+
+        <h:form id="formAdminUsers" rendered="#{beanForm.isAdmin}">
+            <p:growl id="messages" showDetail="true"/>
+
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:outputLabel value="#{msg.adminUsersTitle}" styleClass="text-4xl font-bold"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:tabMenu activeIndex="0">
+                        <p:menuitem value="#{msg.userHeader}" icon="pi pi-users" outcome="admin-users.xhtml"/>
+                        <p:menuitem value="#{msg.gameHeader}" icon="pi pi-desktop" outcome="admin-games.xhtml"/>
+                    </p:tabMenu>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <div class="card mt-4">
+                <p:dataTable id="tableClients"
+                             var="user"
+                             value="#{managerBean.findAllUsers()}"
+                             paginator="true"
+                             rows="5"
+                             widgetVar="dtUsers">
+
+                    <f:facet name="header">
+                        <div class="flex justify-content-between align-items-center">
+                            <p:commandButton value="#{msg.newUser}"
+                                             icon="pi pi-plus"
+                                             actionListener="#{managerBean.prepareNewUser()}"
+                                             update=":formAdminUsers:manage-user-content"
+                                             oncomplete="PF('manageUserDialog').show()"
+                                             styleClass="ui-button-success"/>
+
+                            <span class="ui-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <p:inputText onkeyup="PF('dtUsers').filter()"
+                                             placeholder="#{msg.searchPlaceholder}"/>
+                            </span>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="ID" 
+                              sortBy="#{user.id}">#{user.id}</p:column>
+                    <p:column headerText="#{msg.userNameLabel}" 
+                              sortBy="#{user.name}">#{user.name}</p:column>
+                    <p:column headerText="#{msg.userEmailLabel}" 
+                              sortBy="#{user.email}">#{user.email}</p:column>
+
+                    <p:column headerText="#{msg.actionsLabel}">
+                        <p:commandButton icon="pi pi-pencil"
+                                         styleClass="ui-button-warning"
+                                         process="@this"
+                                         actionListener="#{managerBean.prepareEditUser(user)}"
+                                         update=":formAdminUsers:manage-user-content"
+                                         oncomplete="PF('manageUserDialog').show()"/>
+
+                        <p:commandButton icon="pi pi-trash"
+                                         styleClass="ui-button-danger"
+                                         process="@this"
+                                         actionListener="#{managerBean.deleteUser(user)}"
+                                         update="tableClients messages">
+                            <p:confirm header="#{msg.confirmHeader}"
+                                       message="#{msg.deleteUserMsg}"
+                                       icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="#{msg.adminUsersTitle}"
+                      widgetVar="manageUserDialog"
+                      modal="true"
+                      width="400">
+
+                <p:outputPanel id="manage-user-content" class="ui-fluid">
+
+                    <div class="field mb-3">
+                        <p:outputLabel for="u_name" value="#{msg.userNameLabel}"/>
+                        <p:inputText id="u_name"
+                                     value="#{managerBean.selectedUser.name}"
+                                     required="true"/>
+                    </div>
+
+                    <div class="field mb-3">
+                        <p:outputLabel for="u_email" value="#{msg.userEmailLabel}"/>
+                        <p:inputText id="u_email"
+                                     value="#{managerBean.selectedUser.email}"
+                                     required="true"/>
+                    </div>
+
+                    <h:panelGroup rendered="#{managerBean.selectedUser.id == null}">
+                        <div class="field mb-3">
+                            <p:outputLabel for="u_pass" value="#{msg.userPasswordLabel}"/>
+                            <p:password id="u_pass"
+                                        value="#{managerBean.selectedUser.password}"
+                                        required="true"
+                                        feedback="false"
+                                        toggleMask="true"/>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="#{msg.btnSave}"
+                                     icon="pi pi-check"
+                                     actionListener="#{managerBean.saveUser()}"
+                                     update="tableClients messages"
+                                     oncomplete="if(!args.validationFailed) PF('manageUserDialog').hide()"/>
+
+                    <p:commandButton value="#{msg.btnCancel}"
+                                     icon="pi pi-times"
+                                     type="button"
+                                     onclick="PF('manageUserDialog').hide()"
+                                     class="ui-button-secondary"/>
+                </f:facet>
+            </p:dialog>
+
+            <p:confirmDialog global="true"
+                             showEffect="fade"
+                             hideEffect="fade"
+                             styleClass="ui-confirm-dialog"
+                             width="350">
+
+                <p:commandButton value="#{msg.btnYes}"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-yes ui-button-danger"
+                                 icon="pi pi-check"/>
+
+                <p:commandButton value="#{msg.btnNo}"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-secondary"
+                                 icon="pi pi-times"/>
+            </p:confirmDialog>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

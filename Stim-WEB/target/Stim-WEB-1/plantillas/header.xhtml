@@ -1,0 +1,54 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <h:form>
+        <p:toolbar styleClass="flex-grow-1">
+
+            <p:toolbarGroup styleClass="flex-grow-1 pr-8">
+
+                <p:commandButton
+                    icon="pi pi-home"
+                    value="#{msg.brandName}"
+                    styleClass="ui-button-outlined m-1"
+                    action="#{loginBean.goHome()}"/>
+
+            </p:toolbarGroup>
+
+            <p:toolbarGroup align="right" >
+
+                <p:commandButton type="submit" 
+                                 value="#{msg.admin}" 
+                                 styleClass="ui-button-flat m-2" 
+                                 action="#{loginBean.goManager()}"
+                                 rendered="#{beanForm.isAdmin}"/>
+
+                <p:commandButton value="#{msg.games}" 
+                                 styleClass="ui-button-flat m-2" 
+                                 action="#{loginBean.goHome()}"/>
+
+                <p:commandButton value="#{userBean.userActual.name}" 
+                                 styleClass="ui-button-outlined ui-button-secondary" 
+                                 icon="pi pi-user" 
+                                 action="#{loginBean.goProfile()}" 
+                                 rendered="#{beanForm.logeado}"/>
+
+                <p:commandButton styleClass="ui-button-outlined ui-button-secondary" 
+                                 iconPos="right" 
+                                 icon="pi pi-sign-out" 
+                                 action="#{beanForm.logout()}" 
+                                 rendered="#{beanForm.logeado}"/>
+
+                <p:commandButton styleClass="ui-button-outlined ui-button-secondary" 
+                                 icon="pi pi-sign-in" 
+                                 action="#{loginBean.goLogin()}" 
+                                 rendered="#{!beanForm.logeado}"/>
+            </p:toolbarGroup>
+
+        </p:toolbar>
+    </h:form>
+
+</ui:composition>

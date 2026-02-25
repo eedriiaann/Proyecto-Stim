@@ -1,0 +1,100 @@
+<ui:composition 
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/plantillas/plantilla.xhtml">
+
+    <ui:define name="content">
+        <h:form id="profileForm" styleClass="p-8" rendered="#{beanForm.logeado}">
+
+            <p:panel header="#{msg.userProfile}" style="max-width:800px;margin:auto">
+                <div style="text-align: right">
+                    <p:commandButton value="#{msg.editProfile}" 
+                                     icon="pi pi-user-edit" 
+                                     oncomplete="PF('dlgEditProfile').show()"
+                                     styleClass="ui-button-secondary"/>
+                </div>
+                <p:panelGrid columns="2" columnClasses="col1,col2"
+                             styleClass="ui-panelgrid-blank" style="width:100%">
+
+                    <p:graphicImage value="#{userBean.userActual.pfpURI != null 
+                                             ? userBean.userActual.pfpURI
+                                             : 'https://s1.zerochan.net/Lulu.%28League.of.Legends%29.600.3357404.jpg'}"
+                                    width="150" height="150" style="border-radius:50%"/>
+
+                    <h:panelGroup>
+                        <h2 class="text-3xl font-bold">#{userBean.userActual.name}</h2>
+                        <h:outputText value="#{userBean.userActual.email}" style="color:gray"/>
+                        <br/><br/>
+                        <p:tag value="#{userBean.userActual.reviews} #{msg.reviewsCount}" severity="info"/>
+                    </h:panelGroup>
+                </p:panelGrid>
+
+                <p:divider />
+
+                <h3 class="text-xl font-bold mb-2">#{msg.descriptionTitle}</h3>
+                <p:outputPanel>
+                    <h:outputText value="#{userBean.userActual.description}"
+                                  rendered="#{not empty userBean.userActual.description}" />
+                    <h:outputText value="#{msg.noDescription}"
+                                  rendered="#{empty userBean.userActual.description}"
+                                  style="color:gray; font-style: italic;"/>
+                </p:outputPanel>
+
+                <p:divider />
+
+                <h3 class="text-xl font-bold mb-2">#{msg.reviewsTitle}</h3>
+
+                <p:dataTable value="#{userBean.userActual.reviewList}"
+                             var="review"
+                             paginator="true"
+                             paginatorPosition="bottom"
+                             rows="5"
+                             emptyMessage="#{msg.noReviews}">
+
+                    <p:column headerText="#{msg.columnGame}">
+                        <h:outputText value="#{review.game.name}" styleClass="font-bold"/>
+                    </p:column>
+
+                    <p:column headerText="#{msg.columnReview}">
+                        <h:outputText value="#{review.review}" />
+                    </p:column>
+
+                    <p:column headerText="#{msg.columnScore}">
+                        <p:rating value="#{review.rating}" readonly="true"/>
+                    </p:column>
+
+                </p:dataTable>
+
+            </p:panel>
+            <p:dialog header="#{msg.editProfileTitle}" widgetVar="dlgEditProfile" 
+                      modal="true" responsive="true" showEffect="fade" hideEffect="fade">
+
+                    <p:messages id="msgs" closable="true"/>
+
+                    <h:panelGrid columns="1" cellpadding="7" styleClass="mb-3">
+                        <p:outputLabel for="name" value="#{msg.userNameLabel}" />
+                        <p:inputText id="name" value="#{userBean.userActual.name}" required="true" style="width: 100%"/>
+
+                        <p:outputLabel for="pfp" value="#{msg.labelPhotoUrl}" />
+                        <p:inputText id="pfp" value="#{userBean.userActual.pfpURI}" placeholder="https://..." style="width: 100%"/>
+
+                        <p:outputLabel for="desc" value="#{msg.descriptionTitle}" />
+                        <p:inputTextarea id="desc" value="#{userBean.userActual.description}" 
+                                         rows="4" cols="30" autoResize="false" style="width: 100%"/>
+                    </h:panelGrid>
+
+                    <div class="flex justify-content-end mt-4">
+                        <p:commandButton value="#{msg.btnCancel}" icon="pi pi-times" 
+                                         onclick="PF('dlgEditProfile').hide()" 
+                                         styleClass="ui-button-flat mr-2" />
+                        <p:commandButton value="#{msg.btnSave}" 
+                                         action="#{userBean.updateProfile()}" 
+                                         update="profileForm"
+                                         oncomplete="if (!args.validationFailed) PF('dlgEditProfile').hide()" /> 
+                    </div>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

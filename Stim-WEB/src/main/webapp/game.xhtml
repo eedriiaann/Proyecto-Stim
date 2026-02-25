@@ -1,0 +1,200 @@
+<ui:composition 
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    template="/plantillas/plantilla.xhtml"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formGame" styleClass="">
+
+            <div class="banner-wrapper">
+                <p:graphicImage 
+                    value="#{gameBean.gameActual.bannerUri}"
+                    styleClass="banner-img"/>
+            </div>
+
+            <div class="content-wrapper">
+                <div class="grid">
+
+                    <div class="col-12 md:col-4">
+                        <p:graphicImage value="#{gameBean.gameActual.posterUri}"
+                                        styleClass="w-full poster"/>
+                    </div>
+
+                    <div class="col-12 md:col-6">
+                        <div class="info-text">
+                            <div class="mb-5 flex justify-content-between align-items-center w-full p-3 border-round surface-0">
+                                <div class="flex align-items-center">
+                                    <i class="pi-thumbs-up-fill pi" style="font-size: 2rem"></i>
+                                    <div class="ml-3">
+                                        <p:outputLabel value="Rating: #{gameBean.gameActual.stars} ⭐ (#{gameBean.gameActual.ratingPercentage}%)"/>
+                                        <p:outputLabel value="#{gameBean.gameActual.countReview} reviews" styleClass="text-sm block"/>
+                                    </div>
+                                </div>
+
+                                <p:commandButton value="#{msg.putReview}" icon="pi pi-star" styleClass="ui-button-outlined ui-button-success" onclick="PF('reviewDlgWV').show()" rendered="#{beanForm.logeado}"/>
+                                <p:commandButton value="Inicia sesión" icon="pi pi-unlock" styleClass="ui-button-outlined ui-button-success" action="#{loginBean.goLogin()}" rendered="#{!beanForm.logeado}" immediate="true"/>
+                            </div>
+                            <div>
+                                <p:outputLabel value="#{gameBean.gameActual.name}" styleClass="text-4xl font-bold"/>
+                                <br/>
+                                <p:outputLabel value="#{gameBean.gameActual.description}" styleClass="text-base"/>
+                                <br/>
+                            </div>
+                            <div class="pt-5">
+                                <p:outputLabel value="Géneros: " styleClass="text-lg font-bold"/>
+                                <ui:repeat var="genre" value="#{gameBean.genres}">
+                                    <p:tag value="#{genre.name}" styleClass="mr-2 mt-2"/>
+                                </ui:repeat>
+
+                                <p:outputPanel rendered="#{empty gameBean.genres}">
+                                    No cuadra con ningun genero de la web :(
+                                </p:outputPanel>
+
+                                <br/>
+                                <p:outputLabel value="Desarrollador: " styleClass="text-lg font-bold"/>
+                                <p:outputLabel value="#{gameBean.gameActual.developer}" styleClass="text-lg"/>
+                                <br/>
+                                <p:outputLabel value="Publisher: " styleClass="text-lg font-bold"/>
+                                <p:outputLabel value="#{gameBean.gameActual.publisher}" styleClass="text-lg"/>
+                                <br/>
+                                <p:outputLabel value="Fecha de lanzamiento: " styleClass="text-lg font-bold"/>
+                                <p:outputLabel value="18 de Diciembre de 2018" styleClass="text-lg"/>
+                                <br/>
+                                <p:outputLabel value="Sistemas soportados: " styleClass="text-lg font-bold"/>
+                                <ui:repeat var="os" value="#{gameBean.os}">
+                                    <p:tag value="#{os.name}" severity="warning" styleClass="mr-2 mt-2"/>
+                                </ui:repeat>
+
+                                <p:outputPanel rendered="#{empty gameBean.os}">
+                                    No cuadra con ningun genero de la web :(
+                                </p:outputPanel>
+
+                            </div>  
+                            <p:commandButton value="Ocultar historial de precio" action="#{dbBean.priceHistory}" styleClass="ui-button-outlined mt-5" update="formGame" icon="pi pi-credit-card" rendered="#{dbBean.priceHistory}"/>
+                            <p:commandButton value="Mostrar historial de precio" action="#{dbBean.priceHistory}" styleClass="ui-button-outlined mt-5" update="formGame" icon="pi pi-credit-card" rendered="#{!dbBean.priceHistory}"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <p:card class="w-screen p-8 card mr-8" rendered="#{dbBean.priceHistory}">
+                <p:chart value="#{chartView.lineModel}" style="width: 100%; height: 500px;" />
+            </p:card>
+            <div class="w-screen p-8">
+                <p:outputLabel value="#{msg.reviewsTitle}" styleClass="text-4xl font-bold"/>
+                <p:dataView value="#{reviewBean.reviews}" var="review" layout="list">
+                    <p:dataViewListItem>
+                        <p:card styleClass="mb-4">
+                            <div class="p-1 flex flex-wrap align-items-center justify-content-left">
+                                <p:avatar size="large" shape="circle">
+                                    <p:graphicImage
+                                        value="#{review.user.pfpURI != null 
+                                                 ? review.user.pfpURI
+                                                 : 'https://s1.zerochan.net/Lulu.%28League.of.Legends%29.600.3357404.jpg'}"
+                                        width="40"
+                                        height="40"/>
+                                </p:avatar>
+
+                                <p:outputLabel
+                                    value="#{review.user.name}"
+                                    styleClass="text-2xl vertical-align-middle pl-2"/>
+                                <div class="p-1 flex flex-wrap align-items-center justify-content-right">
+                                    <p:commandButton icon="pi pi-trash" 
+                                                     action="#{reviewBean.removeReview(review)}" 
+                                                     update="@form" 
+                                                     process="@this"
+                                                     rendered="#{beanForm.logeado and (review.user.id == userBean.userActual.id or beanForm.isAdmin)}">
+                                        <p:confirm header="Confirmar"
+                                                   message="¿Eliminar reseña?"
+                                                   icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+
+                            <div class="my-2">
+                                <ui:repeat value="#{[1,2,3,4,5]}" var="i">
+                                    <i class="#{i le review.rating ? 'pi pi-star-fill' : 'pi pi-star'}"></i>
+                                </ui:repeat>
+                            </div>
+
+                            <p:outputLabel
+                                value="#{review.review}"
+                                styleClass="text-xl"/>
+
+                            <br/>
+
+                            <p:outputLabel
+                                value="#{review.reviewDate}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </p:outputLabel>
+
+                        </p:card>
+                    </p:dataViewListItem>
+                </p:dataView>
+            </div>
+
+
+            <p:dialog  id="reviewDlg"
+                       widgetVar="reviewDlgWV"
+                       header="Poner reseña"
+                       modal="true"
+                       resizable="false"
+                       closable="true"
+                       draggable="false"
+                       positionType="fixed"
+                       position="center"
+                       minHeight="40" width="450" 
+                       showEffect="fade" 
+                       closeOnEscape="true">
+                <p:card>
+                    <p:panelGrid columns="1" styleClass="w-full">
+
+                        <p:outputLabel value="Puntuación"/>
+                        <p:rating value="#{reviewBean.newReview.rating}" stars="5" cancel="false" required="true" />
+
+                        <p:outputLabel value="Reseña"/>
+                        <p:inputTextarea
+                            value="#{reviewBean.newReview.review}"
+                            rows="4"
+                            styleClass="w-full"
+                            counter="display" 
+                            maxlength="250"
+                            counterTemplate="{0} characters remaining." 
+                            autoResize="true"
+                            required="true"
+                            placeholder="Escribe tu opinión..." />
+                        <h:outputText id="display" class="block" />
+
+                        <p:commandButton
+                            value="Publicar reseña"
+                            icon="pi pi-check"
+                            action="#{reviewBean.addReview}"
+                            update="formGame"
+                            styleClass="mt-3 ui-button-success w-full"/>
+
+                    </p:panelGrid>
+                </p:card>
+            </p:dialog>
+
+            <p:confirmDialog global="true"
+                             showEffect="fade"
+                             hideEffect="fade"
+                             styleClass="ui-confirm-dialog"
+                             width="350">
+
+                <p:commandButton value="Sí"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-yes ui-button-danger"
+                                 icon="pi pi-check"/>
+
+                <p:commandButton value="No"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-secondary"
+                                 icon="pi pi-times"/>
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,136 @@
+/* Personalización del botón Log */
+.btn-log {
+    background-color: #4CAF50;   /* Verde similar a Letterboxd */
+    color: white;                /* Texto blanco */
+    border: 2px solid #4CAF50;   /* Borde del mismo color que el fondo */
+    border-radius: 5px 0 0 5px;  /* Bordes redondeados solo a la izquierda */
+    padding: 4px 16px;           /* Espaciado interno */
+    font-size: 16px;             /* Tamaño de la fuente */
+    display: inline-block;       /* Muestra en línea, pero como bloque */
+    cursor: pointer;            /* Cambia el cursor a puntero */
+  }
+  
+  /* Personalización de la flecha del dropdown */
+  .btn-log-dropdown {
+    background-color: #4CAF50;   /* Mismo verde que el botón */
+    color: white;                /* Texto blanco (aunque la flecha es solo un ícono) */
+    border: 2px solid #4CAF50;   /* Borde del mismo color que el fondo */
+    border-radius: 0 5px 5px 0;  /* Bordes redondeados solo a la derecha */
+    padding: 4px 12px;           /* Espaciado interno */
+    font-size: 14px;             /* Tamaño de la fuente */
+    display: inline-flex;        /* Flexbox para alinear la flecha */
+    align-items: center;         /* Centra la flecha dentro del botón */
+    justify-content: center;     /* Alineación del ícono */
+    cursor: pointer;            /* Cursor de puntero */
+  }
+  
+  /* Flecha del dropdown */
+  .dropdown-arrow::after {
+    font-size: 12px; /* Tamaño más pequeño de la flecha */
+    margin-left: 8px;/* Espaciado con el borde */
+  }
+  
+  /* Estilo al pasar el cursor sobre los botones */
+  .btn-log:hover, .btn-log-dropdown:hover {
+    background-color: #45a049;  /* Fondo más oscuro al pasar el mouse */
+    border-color: #45a049;      /* Borde más oscuro */
+  }
+  
+  /* Menú desplegable */
+  .dropdown-menu {
+    border: 2px solid #4CAF50;  /* Borde verde */
+    border-radius: 5px;         /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  }
+  
+.banner {
+    height: 60vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+}
+
+.poster {
+    position: relative;
+    left: 50px;
+    width: 300px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    outline-color: white;
+    outline-width: 5px;
+    outline-style: solid;
+}
+.sticky-poster {
+    position: sticky;
+    margin-top: -250px;
+}
+.content {
+    padding-top: 100px;
+}
+
+.mi-carrusel {
+    max-width: 900px;
+    margin: auto;
+}
+
+.mi-carrusel-inner {
+    display: flex;
+}
+
+.mi-carrusel-item {
+    flex: 0 0 100%;
+    display: none;
+}
+
+.mi-carrusel-item.activo {
+    display: flex;
+    justify-content: space-around;
+}
+
+.mi-card {
+    width: 18rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mi-card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.mi-card-text {
+    font-size: 1rem;
+    color: #555;
+}
+
+.mi-carrusel-control {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.mi-carrusel-control:hover {
+    background-color: #555;
+}
+
+.pfp img {
+    width: 30;
+    height: 30;
+    border-radius: 100px;
+}
+
+.estrellasCustom{
+    display: flex;
+    flex-direction: row;
+    gap: 1px;
+    color: orange;
+}

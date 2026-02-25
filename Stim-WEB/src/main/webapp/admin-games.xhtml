@@ -1,0 +1,181 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/plantillas/plantilla.xhtml">
+
+    <f:metadata>
+        <f:viewParam name="i" value="1"/>
+    </f:metadata>
+
+    <ui:define name="content">
+
+        <p:outputLabel rendered="#{!beanForm.isAdmin}"
+                       value="#{msg.accessDenied}"/>
+
+        <h:form id="formAdminGames" rendered="#{beanForm.isAdmin}">
+            <p:growl id="messages" showDetail="true"/>
+
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:outputLabel value="#{msg.adminGamesTitle}"
+                                   styleClass="text-4xl font-bold"/>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:tabMenu activeIndex="1">
+                        <p:menuitem value="#{msg.userHeader}"
+                                    icon="pi pi-users"
+                                    outcome="admin-users.xhtml"/>
+                        <p:menuitem value="#{msg.gameHeader}"
+                                    icon="pi pi-desktop"
+                                    outcome="admin-games.xhtml"/>
+                    </p:tabMenu>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <div class="card mt-4">
+                <p:dataTable id="tableGames"
+                             var="game"
+                             value="#{managerBean.findAllGames()}"
+                             paginator="true"
+                             rows="5"
+                             widgetVar="dtGames">
+
+                    <f:facet name="header">
+                        <div class="flex justify-content-between align-items-center">
+                            <p:commandButton value="#{msg.newGame}"
+                                             icon="pi pi-plus"
+                                             actionListener="#{managerBean.prepareNewGame()}"
+                                             update=":formAdminGames:manage-game-content"
+                                             oncomplete="PF('manageGameDialog').show()"
+                                             styleClass="ui-button-success"/>
+
+                            <span class="ui-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <p:inputText onkeyup="PF('dtGames').filter()"
+                                             placeholder="#{msg.searchPlaceholder}"/>
+                            </span>
+                        </div>
+                    </f:facet>
+
+                    <p:column headerText="ID">#{game.id}</p:column>
+                    <p:column headerText="Nombre">#{game.name}</p:column>
+                    <p:column headerText="Desarrollador">#{game.developer}</p:column>
+
+                    <p:column headerText="Acciones">
+                        <p:commandButton icon="pi pi-pencil"
+                                         styleClass="ui-button-warning"
+                                         process="@this"
+                                         actionListener="#{managerBean.prepareEditGame(game)}"
+                                         update=":formAdminGames:manage-game-content"
+                                         oncomplete="PF('manageGameDialog').show()"/>
+
+                        <p:commandButton icon="pi pi-trash"
+                                         styleClass="ui-button-danger"
+                                         process="@this"
+                                         actionListener="#{managerBean.deleteGame(game)}"
+                                         update="tableGames messages">
+
+                            <p:confirm header="#{msg.confirmHeader}"
+                                       message="#{msg.deleteGameMsg}"
+                                       icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="#{msg.gameDialogHeader}"
+                      widgetVar="manageGameDialog"
+                      modal="true"
+                      width="550">
+
+                <p:outputPanel id="manage-game-content" class="ui-fluid">
+
+                    <div class="field mb-2">
+                        <p:outputLabel for="g_name" value="#{msg.gameTitleLabel}"/>
+                        <p:inputText id="g_name"
+                                     value="#{managerBean.selectedGame.name}"
+                                     required="true"/>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <p:outputLabel for="g_poster" value="Poster URL (Obligatorio)"/>
+                            <p:inputText id="g_poster"
+                                         value="#{managerBean.selectedGame.posterUri}"
+                                         requiredMessage="El poster es obligatorio"/>
+                            <p:message for="g_poster" display="text"/>
+                        </div>
+
+                        <div class="field col">
+                            <p:outputLabel for="g_banner" value="Banner URL"/>
+                            <p:inputText id="g_banner"
+                                         value="#{managerBean.selectedGame.bannerUri}"/>
+                        </div>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <p:outputLabel for="g_dev" value="#{msg.gameDevLabel}"/>
+                            <p:inputText id="g_dev"
+                                         value="#{managerBean.selectedGame.developer}"/>
+                        </div>
+
+                        <div class="field col">
+                            <p:outputLabel for="g_pub" value="#{msg.gamePubLabel}"/>
+                            <p:inputText id="g_pub"
+                                         value="#{managerBean.selectedGame.publisher}"/>
+                        </div>
+                    </div>
+
+                    <div class="field mt-3">
+                        <p:outputLabel styleClass="font-bold" value="#{msg.gameGenresLabel}"/>
+                        <p:selectManyCheckbox value="#{managerBean.selectedGenreIds}" columns="4" >
+                            <f:selectItems value="#{managerBean.allGenres}" var="g" itemLabel="#{g.name}" itemValue="#{g.id}"/>
+                        </p:selectManyCheckbox>
+                    </div>
+
+                    <div class="field mt-3">
+                        <p:outputLabel styleClass="font-bold" value="#{msg.gameOSLabel}"/>
+                        <p:selectManyButton value="#{managerBean.selectedOsIds}">
+                            <f:selectItems value="#{managerBean.allOS}" var="os" itemLabel="#{os.name}" itemValue="#{os.id}"/>
+                        </p:selectManyButton>
+                    </div>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="#{msg.btnSave}"
+                                     icon="pi pi-save"
+                                     actionListener="#{managerBean.saveGame()}"
+                                     update="tableGames messages"
+                                     oncomplete="PF('manageGameDialog').hide()"/>
+
+                    <p:commandButton value="#{msg.btnCancel}"
+                                     icon="pi pi-times"
+                                     type="button"
+                                     onclick="PF('manageGameDialog').hide()"
+                                     class="ui-button-secondary"/>
+                </f:facet>
+            </p:dialog>
+
+            <p:confirmDialog global="true"
+                             showEffect="fade"
+                             hideEffect="fade"
+                             styleClass="ui-confirm-dialog"
+                             width="350">
+
+                <p:commandButton value="#{msg.btnYes}"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-yes ui-button-danger"
+                                 icon="pi pi-check"/>
+
+                <p:commandButton value="#{msg.btnNo}"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-secondary"
+                                 icon="pi pi-times"/>
+            </p:confirmDialog>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

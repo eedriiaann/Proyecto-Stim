@@ -1,0 +1,72 @@
+<ui:composition
+        xmlns:h="jakarta.faces.html"
+        xmlns:f="jakarta.faces.core"
+        xmlns:ui="jakarta.faces.facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+    <h:form styleClass="pt-8">
+
+        <p:panel styleClass="border-none text-400 w-full">
+            <div class="grid">
+
+                <div class="col-12 md:col-4 mb-4">
+                    <h:outputText value="GameHub"
+                                  styleClass="text-xl font-bold text-white block mb-2"/>
+                    
+                    <h:outputText value="Tu biblioteca de juegos en un solo lugar."
+                                  styleClass="text-sm line-height-3"/>
+                </div>
+
+                <!-- Links -->
+                <div class="col-12 md:col-4 mb-4">
+                    <h:outputText value="Enlaces"
+                                  styleClass="text-lg font-semibold text-white block mb-3"/>
+
+                    <ul class="list-none p-0 m-0 text-sm">
+                        <li class="mb-2">
+                            <p:link value="#{msg.homeLabel}"
+                                    outcome="/home"
+                                    styleClass="text-400 hover:text-white"/>
+                        </li>
+                        <li class="mb-2">
+                            <p:link value="#{msg.gamesLabel}"
+                                    outcome="/home"
+                                    styleClass="text-400 hover:text-white"/>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-12 md:col-4 mb-4">
+                    <h:outputText value="Síguenos"
+                                  styleClass="text-lg font-semibold text-white block mb-3"/>
+
+                    <div class="flex gap-3">
+                        <p:link styleClass="text-2xl text-400 hover:text-white" href="https://www.youtube.com/shorts/16uJ-jxcKHo?feature=share">
+                            <i class="pi pi-github"/>
+                        </p:link>
+
+                        <p:link styleClass="text-2xl text-400 hover:text-white" href="https://youtu.be/GtRuQqqVLZE">
+                            <i class="pi pi-twitter"/>
+                        </p:link>
+
+                        <p:link styleClass="text-2xl text-400 hover:text-white" href="https://youtu.be/WIRK_pGdIdA?list=RDWIRK_pGdIdA">
+                            <i class="pi pi-discord"/>
+                        </p:link>
+                    </div>
+                </div>
+
+            </div>
+
+            <p:divider styleClass="border-700 my-4"/>
+
+            <div
+                class="flex flex-column md:flex-row justify-content-between align-items-center text-sm pb-4">
+                <h:outputText value="© 2026 GameHub. Todos los derechos reservados."/>
+                <h:outputText value="Hecho con ❤️ y PrimeFaces"
+                              styleClass="mt-2 md:mt-0"/>
+            </div>
+
+        </p:panel>
+
+    </h:form>
+</ui:composition>

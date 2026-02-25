@@ -1,0 +1,10 @@
+cdibeans\ReviewBean.class
+com\mycompany\stim\web\resources\JakartaEE10Resource.class
+cdibeans\DbBean.class
+com\ddi\loginxperiment\beans\FormularioBean.class
+cdibeans\LoginBean.class
+cdibeans\UserBean.class
+com\mycompany\stim\web\JakartaRestConfiguration.class
+placeholders\ChartView.class
+cdibeans\ManagerBean.class
+cdibeans\GameBean.class

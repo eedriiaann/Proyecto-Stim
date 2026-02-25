@@ -1,0 +1,61 @@
+<ui:composition 
+    xmlns:h="jakarta.faces.html"
+    xmlns:f="jakarta.faces.core"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:p="http://primefaces.org/ui"
+    template="/plantillas/plantilla.xhtml">
+
+    <ui:define name="content">
+        <h:form id="formLogin" styleClass="p-8">
+            <p:growl id="growl" showDetail="true" life="3000" />
+
+            <div class="flex align-items-center justify-content-center">
+                <div class="surface-card p-8 shadow-2 border-round lg:w-4">
+
+                    <div class="text-center mb-5">
+                        <p:graphicImage name="placeholder.png" library="images" alt="Image" height="200"/>
+                        <br/>
+                        <p:outputLabel styleClass="text-6xl font-bold" value="#{msg.login}"/>
+                    </div>
+
+                    <div class="ui-fluid">
+                        <div class="field mb-4">
+                            <p:outputLabel for="email" styleClass="block" value="#{msg.emailLabel}"/>
+                            <p:inputText id="email" 
+                                         value="#{beanForm.usuarioDTO.nombre}" 
+                                         placeholder="#{msg.emailPlaceholder}"
+                                         required="true"
+                                         requiredMessage="El email es requerido"
+                                         styleClass="block #{component.valid ? '' : 'ui-state-error'}"/>
+                            <p:message for="email" display="text" styleClass="block ui-state-error" />
+                        </div>
+
+                        <div class="field mb-4">
+                            <p:outputLabel for="password" styleClass="block" value="#{msg.passwordLabel}"/>
+                            <p:password id="password" 
+                                        value="#{beanForm.usuarioDTO.contrasena}"
+                                        placeholder="#{msg.passwordPlaceholder}"
+                                        required="true"
+                                        requiredMessage="La contraseña es requerida"
+                                        feedback="false"
+                                        styleClass="block #{component.valid ? '' : 'ui-state-error'}"/>
+                            <p:message for="password" display="text" styleClass="block ui-state-error" />
+                        </div>
+
+                       <div class="flex justify-content-center flex-wrap mb-6">
+                            <div class="flex align-items-center">
+                                <p:outputLabel value="#{msg.noAcclabel}" styleClass="pl-2"/>
+                                <p:commandLink value="#{msg.goRegister}" action="#{loginBean.goRegister()}" update="formLogin" immediate="true"/>
+                            </div>
+                        </div>
+
+                        <p:commandButton value="#{msg.login}" 
+                                         action="#{beanForm.login}" 
+                                         update="formLogin growl"
+                                         styleClass="w-full"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
